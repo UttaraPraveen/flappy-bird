@@ -1,8 +1,10 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const playButton = document.getElementById("playButton");
+const replayButton = document.getElementById("replayButton");
 const countdownDisplay = document.getElementById("countdown");
 const scoreDisplay = document.getElementById("score");
+const instructions = document.getElementById("instructions");
 
 // Game constants
 const GRAVITY = 0.5;
@@ -12,7 +14,7 @@ const PIPE_GAP = 150;
 const PIPE_SPEED = 2;
 
 // Game variables
-let bird = { x: 50, y: 300, width: 30, height: 30, velocity: 0 };
+let bird = { x: 50, y: 300, width: 30, height: 30, velocity: 0, color: "red" };
 let pipes = [];
 let score = 0;
 let isGameOver = false;
@@ -25,7 +27,7 @@ function createPipe() {
 
 // Draw the bird
 function drawBird() {
-  ctx.fillStyle = "red";
+  ctx.fillStyle = bird.color;
   ctx.fillRect(bird.x, bird.y, bird.width, bird.height);
 }
 
@@ -69,12 +71,14 @@ function update() {
       bird.x + bird.width > pipe.x &&
       (bird.y < pipe.y - PIPE_GAP || bird.y + bird.height > pipe.y)
     ) {
+      bird.color = "gray";  // Change color on collision
       isGameOver = true;
     }
   });
 
   // Check if bird hits the ground or goes out of bounds
   if (bird.y + bird.height >= canvas.height || bird.y <= 0) {
+    bird.color = "gray";  // Change color on collision with ground
     isGameOver = true;
   }
 }
@@ -98,18 +102,20 @@ function gameLoop() {
   if (!isGameOver) {
     requestAnimationFrame(gameLoop);
   } else {
-    alert("Game Over! Your score: " + score);
-    resetGame();
+    setTimeout(() => {
+      alert("Game Over! Your score: " + score);
+      showReplayOption();
+    }, 500);
   }
 }
 
 // Reset the game
 function resetGame() {
-  bird.y = 300;
-  bird.velocity = 0;
+  bird = { x: 50, y: 300, width: 30, height: 30, velocity: 0, color: "red" };
   pipes = [];
   score = 0;
   isGameOver = false;
+  canvas.style.display = "block";
   createPipe();
   gameLoop();
 }
@@ -133,11 +139,22 @@ function startCountdown() {
   }, 1000);
 }
 
+// Show replay button after game over
+function showReplayOption() {
+  replayButton.style.display = "block";
+}
+
 // Start the game when Play button is clicked
 playButton.addEventListener("click", () => {
   playButton.style.display = "none"; // Hide play button
-  scoreDisplay.innerText = "Score: 0";
+  instructions.style.display = "none"; // Hide instructions
   startCountdown(); // Start countdown
+});
+
+// Start the game when Replay button is clicked
+replayButton.addEventListener("click", () => {
+  replayButton.style.display = "none"; // Hide replay button
+  resetGame(); // Reset and start the game
 });
 
 // Handle user input
