@@ -1,5 +1,8 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const playButton = document.getElementById("playButton");
+const countdownDisplay = document.getElementById("countdown");
+const scoreDisplay = document.getElementById("score");
 
 // Game constants
 const GRAVITY = 0.5;
@@ -84,7 +87,7 @@ function draw() {
   drawPipes();
 
   // Display score
-  document.getElementById("score").innerText = `Score: ${score}`;
+  scoreDisplay.innerText = `Score: ${score}`;
 }
 
 // Game loop
@@ -111,13 +114,35 @@ function resetGame() {
   gameLoop();
 }
 
+// Countdown before starting the game
+function startCountdown() {
+  let countdown = 3;
+  countdownDisplay.style.display = "block";
+  countdownDisplay.innerText = countdown;
+
+  const countdownInterval = setInterval(() => {
+    countdown--;
+    if (countdown > 0) {
+      countdownDisplay.innerText = countdown;
+    } else {
+      clearInterval(countdownInterval);
+      countdownDisplay.style.display = "none";
+      canvas.style.display = "block";
+      gameLoop();
+    }
+  }, 1000);
+}
+
+// Start the game when Play button is clicked
+playButton.addEventListener("click", () => {
+  playButton.style.display = "none"; // Hide play button
+  scoreDisplay.innerText = "Score: 0";
+  startCountdown(); // Start countdown
+});
+
 // Handle user input
 window.addEventListener("keydown", event => {
   if (event.code === "Space" && !isGameOver) {
     bird.velocity = FLAP;
   }
 });
-
-// Start the game
-createPipe();
-gameLoop();

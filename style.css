@@ -24,4 +24,24 @@ body {
     color: #fff;
     margin-top: 10px;
   }
+  #playButton {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
   
+  #playButton:hover {
+    background-color: #45a049;
+  }
+  
+  #countdown {
+    font-size: 48px;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 20px;
+  }
+    
